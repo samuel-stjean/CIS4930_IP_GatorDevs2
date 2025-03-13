@@ -35,8 +35,13 @@ CREATE TABLE Persons (
 
 7) Update Backend & Frontend API Links
 - Find all places in the frontend and backend where it says "REPLACE_LINK"
+- there should be just two spots, one in api.js in the frontend, and one in test_frontend.php in the backend
+
+replace "https://www.cise.ufl.edu/~samuel.stjean/Critter_Keeper/backend/api" with wherever you store your backend api file on your server. 
 
 @@ Backend @@
+
+SEE STEP 7 ABOVE !!
 
 I highly recomend you pull this repo and put the php files on your own cise server to run the php with you db. 
 I have no idea how you could run it locally so I dot recommend it. 
