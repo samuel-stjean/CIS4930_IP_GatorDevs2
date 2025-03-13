@@ -19,7 +19,7 @@
         </tr>
 
         <?php
-        $api_url = "https://www.cise.ufl.edu/~samuel.stjean/Critter_Keeper/backend/api/show.php";
+        $api_url = "https://www.cise.ufl.edu/~samuel.stjean/Critter_Keeper/backend/api/show.php"; //REPLACE_LINK
         $response = file_get_contents($api_url);
         
         // Remove the first line if it contains the shebang

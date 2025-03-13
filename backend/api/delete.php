@@ -30,8 +30,6 @@ if ($Personid <= 0) {
     die(json_encode(["error" => "Invalid Personid"]));
 }
 
-// Debugging: Log the attempt
-file_put_contents("/cise/homes/samuel.stjean/public_html/Critter_Keeper/backend/api/debug.log", "Attempting to delete Personid: $Personid\n", FILE_APPEND);
 
 // Prepare delete statement
 $stmt = $conn->prepare("DELETE FROM Persons WHERE Personid = ?");
@@ -46,7 +44,6 @@ if (!$stmt->execute()) {
 
 // Check if any row was affected
 if ($stmt->affected_rows > 0) {
-    file_put_contents("/cise/homes/samuel.stjean/public_html/Critter_Keeper/backend/api/debug.log", "Deleted Personid: $Personid\n", FILE_APPEND);
     echo json_encode(["success" => "Person deleted successfully"]);
 } else {
     echo json_encode(["error" => "Personid not found or already deleted"]);
