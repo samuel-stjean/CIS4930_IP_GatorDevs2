@@ -11,7 +11,7 @@ We will eventually have one centralized database, but for now, create your own d
 
 2: SSH Into the CISE Server: ssh your_cise_username@cise.ufl.edu
 
-3: access mysql $: mysql -h mysql.cise.ufl.edu -u (your_username) -p
+3: access mysql #: mysql -h mysql.cise.ufl.edu -u (your_username) -p
 
 4: enter the password for the database you set up
 
@@ -43,8 +43,8 @@ I have no idea how you could run it locally so I dot recommend it.
 
 ## Dont forget to reformat the php files for unix and have the permissions set to 755 ##
 
-$: dos2unix *.php 
-$: chmod 755 *.php
+#: dos2unix *.php 
+#: chmod 755 *.php
 
 @@ Frontend @@
 
@@ -52,20 +52,20 @@ run it locally
 (cise does not use node, we use react which wont need node when we put it on the server. for you to run it locally you will need node)
 
 On your own computer:
-$ : cd frontend
-$ : npm install
-$ : npm start
+# : cd frontend
+# : npm install
+# : npm start
 
 @@ How to Contribute / Git Workflow @@ 
 
 Create a New Branch:
-$ : git checkout -b feature-name
+# : git checkout -b feature-name
 
 Make Changes & Commit:
-$: git add .
-$: git commit -m "Describe your changes"
+#: git add .
+#: git commit -m "Describe your changes"
 
 Push Changes to GitHub:
-$: git push origin feature-name
+#: git push origin feature-name
 
 DO NOT PUSH TO MAIN, MAKE YOUR OWN BRANCH
