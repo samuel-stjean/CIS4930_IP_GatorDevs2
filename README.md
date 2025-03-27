@@ -53,15 +53,13 @@ I have no idea how you could run it locally so I dot recommend it.
 ## Dont forget to reformat the php files for unix and have the permissions set to 755
 
 ```
-
 dos2unix \_.php
 chmod 755 \_.php
-
 ```
 
 # Frontend
 
-## How to run it locally
+## How to run it locally:
 
 (cise does not use node, we use react which wont need node when we put it on the server. for you to run it locally you will need node)
 
@@ -69,31 +67,25 @@ On your own computer:
 (you may also have to run `export NODE_OPTIONS=--openssl-legacy-provider` or `$env:NODE_OPTIONS="--openssl-legacy-provider"` first for it to work for Unix and Windows rescpectively as shown below)
 
 ```
-
 cd frontend
 npm install
 npm start
-
 ```
 
-## To Upload to UF Server:
+## How to Upload to UF Server:
 
 Unix
 
 ```
-
 export NODE_OPTIONS=--openssl-legacy-provider
 npm run build
-
 ```
 
 Powershell
 
 ```
-
 $env:NODE_OPTIONS="--openssl-legacy-provider"
 npm run build
-
 ```
 
 Then upload the build folder and navigate to it through your UF server URL.
@@ -107,25 +99,12 @@ Create a New Branch:
 Make Changes & Commit:
 
 ```
-
 git add .
 git commit -m "Describe your changes"
-
 ```
 
 Push Changes to GitHub:
+
 `git push origin feature-name`
 
 DO NOT PUSH TO MAIN, MAKE YOUR OWN BRANCH
-
-```
-
-```
-
-```
-
-```
-
-```
-
-```
