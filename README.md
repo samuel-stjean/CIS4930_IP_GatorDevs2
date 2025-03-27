@@ -53,8 +53,8 @@ I have no idea how you could run it locally so I dot recommend it.
 ## Dont forget to reformat the php files for unix and have the permissions set to 755
 
 ```
-dos2unix \_.php
-chmod 755 \_.php
+dos2unix *.php
+chmod 755 *.php
 ```
 
 # Frontend
@@ -107,4 +107,4 @@ Push Changes to GitHub:
 
 `git push origin feature-name`
 
-DO NOT PUSH TO MAIN, MAKE YOUR OWN BRANCH
+**DO NOT PUSH TO MAIN, MAKE YOUR OWN BRANCH**
