@@ -64,6 +64,7 @@ chmod 755 *.php
 (cise does not use node, we use react which wont need node when we put it on the server. for you to run it locally you will need node)
 
 On your own computer:
+
 (you may also have to run `export NODE_OPTIONS=--openssl-legacy-provider` or `$env:NODE_OPTIONS="--openssl-legacy-provider"` first for it to work for Unix and Windows rescpectively as shown below)
 
 ```
@@ -77,6 +78,7 @@ npm start
 Unix
 
 ```
+cd frontend
 export NODE_OPTIONS=--openssl-legacy-provider
 npm run build
 ```
@@ -84,6 +86,7 @@ npm run build
 Powershell
 
 ```
+cd frontend
 $env:NODE_OPTIONS="--openssl-legacy-provider"
 npm run build
 ```
