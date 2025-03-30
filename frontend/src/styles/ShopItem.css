@@ -1,0 +1,71 @@
+/* src/styles/ShopItem.css */
+.shop-item {
+    display: flex;
+    align-items: center;
+    background-color: #e0c8a0; /* Same as plot background */
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #a07d5a;
+    gap: 10px;
+}
+
+.shop-item.cannot-afford {
+    opacity: 0.7;
+    /* Optional: slightly grey out */
+    /* filter: grayscale(50%); */
+}
+
+.shop-item-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #f5e1c8; /* Lighter background for icon */
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Keep image contained */
+    border: 1px solid #a07d5a;
+    font-size: 1.5em; /* For placeholder '?' */
+    color: #a07d5a;
+    flex-shrink: 0; /* Prevent icon from shrinking */
+}
+
+.shop-item-icon img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.shop-item-details {
+    flex-grow: 1; /* Take up remaining space */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent long names breaking layout */
+}
+
+.shop-item-name {
+    font-weight: bold;
+    color: #6a4a3a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ... for long names */
+}
+
+.shop-item-price {
+    font-size: 0.9em;
+    color: #8a6a4a;
+}
+
+.shop-item-buy-button {
+    padding: 4px 12px;
+    font-size: 0.9em;
+    flex-shrink: 0; /* Prevent button shrinking */
+}
+
+/* Make disabled button look more distinct */
+.shop-item-buy-button:disabled {
+    background-color: #b09070;
+    cursor: not-allowed;
+}
+
+/* Inherit coin-icon-small styles (defined in PlotsSection.css or globally) */ 

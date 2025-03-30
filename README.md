@@ -1,4 +1,3 @@
-
 This guide provides the basic steps to set up and run the Critter Keeper project locally and on the CISE servers. 
 Expect to do some troubleshooting, but this document should help you get started. 
 

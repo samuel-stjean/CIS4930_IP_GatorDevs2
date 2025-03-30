@@ -1,0 +1,72 @@
+/* src/styles/PenPlot.css */
+.pen-plot-content {
+    width: 100%;
+    height: 100%;
+    position: relative; /* For absolute positioning of elements and label */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+     overflow: hidden; /* Keep resources inside */
+     background-color: #d8bf9a; /* Slightly different background for pen */
+     border-radius: 8px; /* Match inner radius */
+}
+
+.critter-area {
+    flex-grow: 1; /* Allow critters to take up most space */
+    display: flex;
+    justify-content: space-around; /* Example layout - adjust as needed */
+    align-items: center; /* Center vertically if space */
+    padding: 20px 10px 5px 10px; /* More padding top/bottom */
+    gap: 5px;
+    position: relative; /* Crucial for resource positioning */
+     min-height: 80px; /* Ensure some space for critters/resources */
+}
+
+/* This area overlays the critter area for resource drops */
+.resource-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Cover the whole plot content area */
+    pointer-events: none; /* Allow clicks to pass through to elements below unless it's a resource */
+}
+
+.resource-area > * {
+    pointer-events: auto; /* Make sure resource drops are clickable */
+}
+
+.pen-controls {
+    /* Styles for the area holding add buttons or status messages */
+    padding: 5px;
+    min-height: 25px; /* Ensure space for text */
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.05); /* Subtle background */
+}
+
+.add-critter-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.add-critter-controls span {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #6a4a3a;
+}
+.add-critter-controls button {
+    font-size: 0.8em;
+    padding: 2px 5px;
+}
+
+.pen-status-message {
+    text-align: center;
+    font-size: 0.8em;
+    color: #6a4a3a;
+    margin: 0;
+    padding: 3px;
+    font-style: italic;
+}
+
+
+/* .plot-label style is defined in PlotsSection.css */ 
