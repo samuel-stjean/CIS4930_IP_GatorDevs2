@@ -1,0 +1,40 @@
+/* src/styles/Critter.css */
+.critter-display {
+    position: relative; /* Revert from absolute */
+    /* bottom: 5px; */ /* Remove bottom positioning */
+    /* left and transform not needed */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px; /* Add back padding */
+    /* will-change: left; */ /* Remove hint */
+     /* Let parent (.critter-area) handle positioning */
+}
+
+.critter-image {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    /* Add simple animation? */
+    /* animation: bounce 2s infinite ease-in-out; */
+}
+
+.critter-timer {
+    position: absolute;
+    top: -8px; /* Keep at top */
+    left: 50%;
+    transform: translateX(-50%); /* Re-add transform for centering */
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 0.7em;
+    white-space: nowrap; /* Prevent line break */
+    z-index: 5; /* Ensure timer is above critter image */
+}
+
+/* Example Animation */
+/* @keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+} */ 

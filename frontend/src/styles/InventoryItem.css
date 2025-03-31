@@ -1,0 +1,59 @@
+/* src/styles/InventoryItem.css */
+.inventory-item {
+    border: 1px solid #a07d5a;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: #f5e1c8; /* Slightly lighter than plot background */
+    aspect-ratio: 1 / 1; /* Make them square */
+    min-height: 60px; /* Ensure minimum size */
+    /* Remove button styles if using div */
+    /* font-size: inherit; */
+    /* text-align: inherit; */
+}
+
+/* Style for sellable items */
+.inventory-item.sellable {
+    cursor: pointer; /* Add pointer cursor */
+    transition: background-color 0.2s ease;
+}
+
+.inventory-item.sellable:hover {
+    background-color: #e0c8a0; /* Darken slightly on hover */
+}
+
+/* Style for non-sellable items */
+.inventory-item:not(.sellable) {
+    /* filter: grayscale(50%); */ /* Optional: Slightly gray out non-sellable */
+    cursor: default; /* Ensure default cursor */
+}
+
+.inventory-item-icon {
+    width: 60%;
+    height: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.inventory-item-icon img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.inventory-item-quantity {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #6a4a3a;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 0px 3px;
+    border-radius: 3px;
+} 

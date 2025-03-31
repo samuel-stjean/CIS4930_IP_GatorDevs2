@@ -1,28 +1,16 @@
-import React, { useState } from "react";
-import PersonList from "./components/PersonList";
-import AddPerson from "./components/AddPerson";
-import AddPlayer from "./components/AddPlayer";
-import PlayerList from "./components/PlayerList";
+import React from 'react';
+// Correct paths relative to src/
+import GamePage from './components/GamePage.jsx';
+import { GameProvider } from './contexts/GameContext';
+import './styles/index.css'; // Main CSS file - Ensure this path is correct
 
-const App = () => {
-    const [refresh, setRefresh] = useState(false);
-    const reload = () => setRefresh(!refresh);
-
-    return (
-        <div>
-            <h1>Critter Keeper Database</h1>
-
-            {/* Person Section */}
-            <AddPerson onPersonAdded={reload} />
-            <PersonList key={`person-${refresh}`} />
-
-            <hr />
-
-            {/* Player Section */}
-            <AddPlayer onPlayerAdded={reload} />
-            <PlayerList key={`player-${refresh}`} />
-        </div>
-    );
-};
+function App() {
+  return (
+    // Wrap the GamePage with the GameProvider so all components can access game state
+    <GameProvider>
+      <GamePage />
+    </GameProvider>
+  );
+}
 
 export default App;

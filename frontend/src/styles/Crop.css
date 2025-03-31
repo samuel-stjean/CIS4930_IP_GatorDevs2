@@ -1,0 +1,58 @@
+/* src/styles/Crop.css */
+.crop-display {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+}
+
+.crop-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.crop-timer {
+    position: absolute;
+    top: -8px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 0.7em;
+    white-space: nowrap;
+    z-index: 5;
+}
+
+.crop-stage-debug {
+    font-size: 0.7em;
+    color: #555;
+    position: absolute;
+    top: 2px;
+    left: calc(50% + 30px); /* Position relative to center, adjust offset as needed */
+    transform: translateX(-50%); /* Re-center based on its own width */
+    background-color: rgba(255,255,255,0.5);
+    padding: 1px 2px;
+    border-radius: 2px;
+}
+
+.harvest-button {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8em;
+    padding: 2px 6px;
+    z-index: 5;
+    background-color: #a0d9a0;
+    border: 1px solid #6a9a6a;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.harvest-button:hover {
+    background-color: #8ac98a;
+} 

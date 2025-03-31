@@ -1,0 +1,85 @@
+/* Add to src/styles/FarmPlot.css (or combine with PlotsSection.css) */
+.farm-plot-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes label down */
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 5px; /* Add padding inside */
+    box-sizing: border-box;
+    background-color: #c6a77a; /* Dirt/Brownish background for farms */
+    position: relative; /* Ensure label positioning works */
+}
+
+.crop-spots-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center; /* Center items vertically */
+    width: 100%;
+    flex-grow: 1; /* Take available vertical space */
+}
+
+.empty-crop-spot {
+    border: 1px dashed #a07d5a;
+    min-height: 60px; /* Min height */
+    min-width: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.plant-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.plant-button img {
+    width: 24px;
+    height: 24px;
+    display: block;
+    transition: transform 0.1s ease;
+}
+
+.plant-button:hover img {
+    transform: scale(1.15);
+}
+
+.no-seeds-text {
+    font-size: 0.8em;
+    color: #8a6a4a;
+}
+
+.plant-options {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.plant-options p {
+    margin: 0 0 5px 0;
+     font-weight: bold;
+     color: #a07d5a;
+}
+
+.plant-options button {
+    padding: 4px 10px;
+    font-size: 0.9em;
+}
+
+.no-seeds-message {
+    font-size: 0.9em;
+    color: #888;
+    font-style: italic;
+}
+
+/* .plot-label style is defined in PlotsSection.css */ 

@@ -1,10 +1,11 @@
+/* src/styles/index.css */
 body {
   margin: 0;
   /* font-family: sans-serif; */ /* Use a more game-like font if available */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Nicer default */
-  background-color: #eee5d8; /* Light beige background */
-  background-image: radial-gradient(#d4cabb 1px, transparent 1px); /* Softer dots */
-  background-size: 15px 15px;
+  background-color: #eee5d8; /* Keep background color */
+  /* background-image: radial-gradient(#d4cabb 1px, transparent 1px); */ /* Removed dots */
+  /* background-size: 15px 15px; */ /* Removed dots */
   color: #6a4a3a; /* Darker brown text default */
   padding: 20px;
   box-sizing: border-box;
@@ -92,6 +93,21 @@ button:disabled {
      color: #a07d5a;
 }
 
+/* Coin icon small (used elsewhere) */
+.coin-icon-small {
+    width: 12px;
+    height: 12px;
+    margin-left: 2px;
+    background-color: #f7d070;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+    line-height: 12px;
+    font-size: 9px;
+    color: #a07d5a;
+    vertical-align: middle;
+}
+
 /* General Layout for GamePage */
 .game-page {
     display: grid;
@@ -114,13 +130,6 @@ button:disabled {
     padding-bottom: 10px; /* Space below coins */
 }
 
-.plots-shop-container {
-    /* This container might not be needed with grid-areas */
-    /* display: contents; */ /* Or remove it from GamePage.jsx */
-    grid-area: plots; /* Assign plots section */
-    /* Note: Shop needs its own grid-area assignment */
-}
-
 .plots-section {
      grid-area: plots;
      display: flex; /* Allow flex for internal layout */
@@ -136,3 +145,11 @@ button:disabled {
 .inventory-section {
     grid-area: inventory; /* Assign inventory section */
 }
+
+/* Prevent dragging on images and buttons */
+img, button {
+    user-select: none; /* Prevent text selection */
+    -webkit-user-drag: none; /* Disable drag for Webkit/Blink */
+    user-drag: none; /* Disable drag standard */
+    -webkit-touch-callout: none; /* Disable callout menu on iOS */
+} 

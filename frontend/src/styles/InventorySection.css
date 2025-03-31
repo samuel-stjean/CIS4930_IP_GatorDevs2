@@ -1,0 +1,24 @@
+/* src/styles/InventorySection.css */
+.inventory-section {
+    /* Inherits .panel styles */
+    position: relative; /* Needed for absolute positioning of SellPopup */
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Smaller items */
+    gap: 10px;
+    min-height: 100px; /* Ensure it has some height even when empty */
+    padding: 10px;
+    background-color: #e0c8a0; /* Inner background */
+    border-radius: 8px;
+    border: 1px solid #a07d5a; /* Add a subtle inner border */
+}
+
+.empty-inventory-message {
+    grid-column: 1 / -1; /* Span all columns */
+    text-align: center;
+    color: #a07d5a;
+    padding: 20px;
+    font-style: italic;
+} 

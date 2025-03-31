@@ -1,0 +1,62 @@
+/* src/styles/ShopSection.css */
+.shop-section {
+   /* Inherits .panel styles */
+    display: flex;
+    flex-direction: column;
+}
+
+.shop-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    gap: 5px;
+    border-bottom: 2px solid #a07d5a; /* Separator line */
+    padding-bottom: 10px;
+}
+
+.tab-button {
+    padding: 5px 15px;
+    background-color: #e0c8a0; /* Inactive tab color */
+    border: 1px solid #a07d5a;
+    border-bottom: none; /* Remove bottom border for tab effect */
+    border-radius: 8px 8px 0 0; /* Round top corners */
+    cursor: pointer;
+    color: #6a4a3a;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.tab-button:hover:not(.active):not(:disabled) {
+    background-color: #d3b890;
+}
+
+.tab-button.active {
+    background-color: #f5e1c8; /* Active tab matches panel background */
+    border-bottom: 2px solid #f5e1c8; /* Hide bottom border part */
+    margin-bottom: -2px; /* Overlap the main border */
+}
+
+.tab-button:disabled {
+    color: #a07d5a;
+    background-color: #c0a080;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+
+.shop-items-list {
+    flex-grow: 1;
+    overflow-y: auto; /* Add scroll if items overflow */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between shop items */
+    padding: 5px; /* Add some padding inside the scroll area */
+    min-height: 100px; /* Ensure it takes some space */
+}
+
+.empty-tab-message {
+     text-align: center;
+     color: #a07d5a;
+     padding: 20px;
+     font-style: italic;
+} 

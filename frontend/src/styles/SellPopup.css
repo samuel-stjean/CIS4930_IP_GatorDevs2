@@ -1,0 +1,56 @@
+/* src/styles/SellPopup.css */
+.sell-popup {
+    /* Inherits .panel styles (light beige background, brown border, radius) */
+    min-width: 150px;
+    padding: 10px;
+    padding-top: 25px; /* Extra padding top for close button */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* More prominent shadow */
+    /* Position is set via inline style */
+    position: absolute; /* Ensure it behaves correctly with position style */
+}
+
+.close-popup-button {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: none;
+    border: none;
+    color: #a07d5a;
+    font-size: 1.2em;
+    line-height: 1;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+}
+.close-popup-button:hover {
+    color: #6a4a3a;
+}
+
+
+.sell-popup-item-name {
+    font-weight: bold;
+    color: #6a4a3a;
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+}
+
+.sell-popup-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.sell-popup-actions button {
+    font-size: 0.9em;
+    padding: 4px 8px;
+}
+
+.sell-popup-actions button:disabled {
+    /* Already styled globally, but can override */
+    opacity: 0.7;
+}
+
+/* Inherit coin-icon-small styles (defined in PlotsSection.css or globally) */ 

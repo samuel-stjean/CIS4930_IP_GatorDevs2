@@ -1,0 +1,132 @@
+/* src/styles/PlotsSection.css */
+.plots-section {
+    /* Inherits .panel styles */
+    position: relative; /* Keep for potential absolute elements within */
+    display: flex; /* Added for flex-grow on plots-grid */
+    flex-direction: column;
+}
+
+/* Removed .plots-arrows styles */
+
+.plots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    /* margin-top: 25px; */ /* No longer needed if arrows removed */
+    position: relative;
+    flex-grow: 1;
+    padding: 5px;
+}
+
+/* Adjust plot container to fill its grid cell */
+.plot-outer-container {
+    /* This container now takes the grid placement */
+    display: contents; /* Or use flex/grid if outer container needs styling */
+}
+
+.plot-container {
+    /* .plot-container is now inside .plot-outer-container */
+    background-color: #e0c8a0; /* Slightly darker beige for plot background */
+    border: 2px solid #a07d5a;
+    border-radius: 10px;
+    min-height: 150px;
+    height: 100%; /* Make plot container fill the outer container */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    position: relative; /* For positioning elements inside */
+    box-sizing: border-box;
+}
+
+/* Style for the "Add Plot" button container */
+.add-plot-container {
+     /* This is now a .plot-outer-container */
+    /* background-color: #d3b890; */ /* Handled by .plot-container inside */
+    border-style: dashed;
+    border-radius: 10px;
+    /* min-height needed? */
+}
+.add-plot-container .add-plot-button {
+     /* background: none; */ /* remove inner background? */
+}
+
+.add-plot-button {
+    background: none;
+    border: none;
+    color: #6a4a3a;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+}
+
+.add-plot-button:hover:not(:disabled) {
+     background-color: rgba(255, 255, 255, 0.2);
+}
+
+.add-plot-button:disabled {
+    color: #a07d5a;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.coin-icon-small {
+    /* Similar to coin-icon but maybe smaller */
+    width: 12px;
+    height: 12px;
+    margin-left: 2px;
+    background-color: #f7d070;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+    line-height: 12px;
+    font-size: 9px;
+    color: #a07d5a;
+    vertical-align: middle;
+}
+
+/* Styling for Empty Plot within Plot Container */
+.empty-plot-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 100%; /* Fill the container */
+}
+
+.empty-plot-content p {
+    margin: 0;
+    font-weight: bold;
+    color: #a07d5a;
+}
+
+.empty-plot-content div {
+    display: flex;
+    gap: 8px;
+}
+
+/* General Plot Label (used by Farm/Pen) */
+.plot-label {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    font-size: 0.7em;
+    font-weight: bold;
+    color: #a07d5a;
+    background-color: rgba(245, 225, 200, 0.7); /* Semi-transparent background */
+    padding: 1px 3px;
+    border-radius: 3px;
+} 
