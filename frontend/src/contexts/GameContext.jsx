@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
+import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
+
 // Game data configuration
 import {
     itemDetails as staticItemDetails,
@@ -11,7 +12,7 @@ import {
 } from '../config/gameData';
 // Custom hook for handling intervals cleanly
 import useInterval from '../hooks/useInterval';
-
+import { savePlayerCoins, fetchPlayers } from '../api';
 const GameContext = createContext();
 
 // Hook for components to easily access game state and actions
@@ -23,6 +24,8 @@ export const critterTypes = staticCritterTypes;
 export const cropTypes = staticCropTypes;
 export const plotCosts = staticPlotCosts;
 
+
+
 // --- Game Provider Component: Wraps the whole game --- //
 export const GameProvider = ({ children }) => {
     // --- Core Game State --- //
@@ -33,8 +36,30 @@ export const GameProvider = ({ children }) => {
     // --- Basic State Updaters --- //
 
     // Update player's coin total (can be positive or negative)
+    // const updateCoins = useCallback((amount) => {
+    //     setCoins(prev => prev + amount);
+    // }, []);
+
+    const playerId = 1; // TEMP: set your test player's ID
+
     const updateCoins = useCallback((amount) => {
-        setCoins(prev => prev + amount);
+        setCoins(prev => {
+            const updated = prev + amount;
+            savePlayerCoins(playerId, updated);  // Save to backend
+            return updated;
+        });
+    }, []);
+
+    useEffect(() => {
+        async function loadInitialCoins() {
+            const players = await fetchPlayers();
+            if (players.length > 0) {
+                setCoins(players[0].Coins || 0);
+                console.log("Loaded coins from backend:", players[0].Coins);
+            }
+        }
+    
+        loadInitialCoins();
     }, []);
 
     // Update the quantity of an item in the inventory
