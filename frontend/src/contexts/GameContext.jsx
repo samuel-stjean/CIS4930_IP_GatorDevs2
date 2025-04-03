@@ -12,7 +12,7 @@ import {
 } from '../config/gameData';
 // Custom hook for handling intervals cleanly
 import useInterval from '../hooks/useInterval';
-import { savePlayerCoins, fetchPlayers } from '../api';
+import { saveInventory, loadInventory, savePlayerCoins, fetchPlayers } from '../api';
 const GameContext = createContext();
 
 // Hook for components to easily access game state and actions
@@ -278,6 +278,44 @@ export const GameProvider = ({ children }) => {
    }, [inventory, updateInventory, updatePlot]); // Depends on inventory
 
     // --- Shop and Inventory Actions --- //
+
+    useEffect(() => {
+        async function fetchInventory() {
+            const data = await loadInventory(playerId);
+            console.log("Inventory from backend:", data); // <== ADD THIS
+    
+            if (!Array.isArray(data)) {
+                console.error("Failed to load inventory: ", data);
+                return;
+            }
+    
+            const mapped = {};
+            data.forEach(item => {
+                if (item.PlantID) mapped[`plant_${item.PlantID}`] = (mapped[`plant_${item.PlantID}`] || 0) + 1;
+                if (item.CritterID) mapped[`critter_${item.CritterID}`] = (mapped[`critter_${item.CritterID}`] || 0) + 1;
+            });
+            setInventory(mapped);
+        }
+        fetchInventory();
+    }, []);
+    
+    
+    
+    useEffect(() => {
+        try {
+            const inventoryArray = [];
+            for (let item in inventory) {
+                const [type, id] = item.split('_');
+                if (type === 'plant') inventoryArray.push({ PlantID: id });
+                else if (type === 'critter') inventoryArray.push({ CritterID: id });
+            }
+            saveInventory(playerId, inventoryArray);
+        } catch (err) {
+            console.error("Failed to save inventory:", err);
+        }
+    }, [inventory]);
+    
+    
 
     // Buy an item (seed, egg) from the shop
     const buyShopItem = useCallback((itemId) => {

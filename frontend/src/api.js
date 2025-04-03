@@ -84,3 +84,31 @@ export const deletePlayer = async (PlayerID) => {
         console.error("Error deleting player:", error);
     }
 };
+
+// Save inventory for a player
+export const saveInventory = async (PlayerID, Inventory) => {
+    try {
+        await axios.post(`${API_URL}/save_inventory.php`, {
+            PlayerID,
+            Inventory,
+        });
+    } catch (error) {
+        console.error("Error saving inventory:", error);
+    }
+};
+
+// Load inventory for a player
+export const loadInventory = async (playerId) => {
+    try {
+        const response = await fetch(`${API_URL}/load_inventory.php?PlayerID=${playerId}`);
+        const raw = await response.text();
+        const clean = raw.replace(/^#!.*\n/, '');  // remove shebang line
+        return JSON.parse(clean);
+    } catch (error) {
+        console.error("Failed to load inventory:", error);
+        return [];
+    }
+};
+
+
+

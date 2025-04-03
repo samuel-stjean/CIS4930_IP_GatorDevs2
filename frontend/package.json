@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
+  "homepage": "https://www.cise.ufl.edu/~samuel.stjean/Critter_Keeper",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
