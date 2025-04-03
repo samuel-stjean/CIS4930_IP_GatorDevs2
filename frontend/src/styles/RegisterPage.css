@@ -1,0 +1,30 @@
+/* styles/LoginPage.css & RegisterPage.css */
+.panel {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.error-message {
+    color: red;
+    font-size: 1em;
+    margin-top: 10px;
+}
+
+.register-button, .back-button {
+    display: block;
+    margin-top: 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.register-button:hover, .back-button:hover {
+    background: #0056b3;
+}

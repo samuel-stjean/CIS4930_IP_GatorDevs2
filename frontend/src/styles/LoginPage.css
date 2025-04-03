@@ -1,0 +1,65 @@
+/* src/styles/LoginPage.css */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .login-panel {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+  }
+  
+  h2.section-title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    font-size: 1.1em;
+    color: #6a4a3a;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    background-color: #f5e1c8;
+    border: 2px solid #6a4a3a;
+    border-radius: 8px;
+    font-size: 1em;
+    color: #6a4a3a;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #a07d5a; /* Slightly darker border on focus */
+  }
+  
+  button {
+    width: 100%;
+    background-color: #a07d5a;
+    color: #f5e1c8;
+    border: 2px solid #5a3a2a;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+  }
+  
+  button:hover:not(:disabled) {
+    background-color: #6a4a3a;
+    border-color: #4a2a1a;
+  }
+  
+  button:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  
