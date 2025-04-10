@@ -1,5 +1,6 @@
 import React from 'react';
 // Import the main sections of the game UI
+import { useNavigate } from 'react-router-dom';
 import PlotsSection from './PlotsSection';
 import ShopSection from './ShopSection';
 import InventorySection from './InventorySection';
@@ -9,7 +10,8 @@ import { useGame } from '../contexts/GameContext';
 // This component sets up the main layout of the game page
 const GamePage = () => {
     // Get current coins and the function to update them
-    const { coins, updateCoins } = useGame();
+    const { coins, updateCoins, hasLoadedInventory } = useGame();
+    const navigate = useNavigate();
 
     // Simple cheat function to add coins for testing
     const handleCheatClick = () => {
@@ -17,9 +19,36 @@ const GamePage = () => {
         console.log("Cheat: +50 Coins added!"); // Log for feedback
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('playerId'); 
+        navigate('/'); 
+    };
+
+    if (!hasLoadedInventory) {
+        return <div>Loading your game data...</div>;
+      }
+
     return (
         // The main container uses CSS Grid for layout (defined in index.css)
         <div className="game-page">
+
+            {/* Logout button */}
+            <button
+                onClick={handleLogout}
+                style={{
+                    position: 'absolute',
+                    top: '10px',
+                    left: '20px',
+                    padding: '6px 12px',
+                    backgroundColor: '#444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    zIndex: 1000
+                }}
+            >
+                Logout
+            </button>
 
             {/* Area to display the player's current coin count */}
             <div className="coin-display-area">

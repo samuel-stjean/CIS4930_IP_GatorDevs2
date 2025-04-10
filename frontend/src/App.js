@@ -1,14 +1,23 @@
 import React from 'react';
-// Correct paths relative to src/
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import GamePage from './components/GamePage.jsx';
+import LoginPage from './components/LoginPage.jsx';
+import RegisterPage from './components/RegisterPage.jsx';
 import { GameProvider } from './contexts/GameContext';
-import './styles/index.css'; // Main CSS file - Ensure this path is correct
+import './styles/index.css';
 
 function App() {
+  const playerId = localStorage.getItem('playerId'); // 👈 force GameProvider to re-init per player
+
   return (
-    // Wrap the GamePage with the GameProvider so all components can access game state
-    <GameProvider>
-      <GamePage />
+    <GameProvider key={playerId}>
+      <Router basename="/~samuel.stjean/Critter_Keeper">
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/game" element={<GamePage />} />
+        </Routes>
+      </Router>
     </GameProvider>
   );
 }

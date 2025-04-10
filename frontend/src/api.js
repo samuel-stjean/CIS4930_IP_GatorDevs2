@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 // Base URL for your CISE backend
 const API_URL = "https://www.cise.ufl.edu/~samuel.stjean/Critter_Keeper/backend/api";
 
@@ -85,30 +86,92 @@ export const deletePlayer = async (PlayerID) => {
     }
 };
 
-// Save inventory for a player
+// Save inventory for a player 
 export const saveInventory = async (PlayerID, Inventory) => {
     try {
-        await axios.post(`${API_URL}/save_inventory.php`, {
-            PlayerID,
-            Inventory,
-        });
+        const payload = { PlayerID, Inventory };
+        console.log("[saveInventory] Sending to backend:", payload);
+
+        const response = await axios.post(`${API_URL}/save_inventory.php`, payload);
+
+        console.log("[saveInventory] Response from backend:", response.data);
     } catch (error) {
-        console.error("Error saving inventory:", error);
+        console.error("[saveInventory] Error saving inventory:", error);
     }
 };
+
 
 // Load inventory for a player
 export const loadInventory = async (playerId) => {
     try {
         const response = await fetch(`${API_URL}/load_inventory.php?PlayerID=${playerId}`);
         const raw = await response.text();
-        const clean = raw.replace(/^#!.*\n/, '');  // remove shebang line
+
+        // Remove the shebang line safely
+        const clean = raw.replace(/^#!.*(\r?\n)/, '');
+
         return JSON.parse(clean);
     } catch (error) {
         console.error("Failed to load inventory:", error);
         return [];
     }
 };
+
+
+
+export const fetchPlayerById = async (playerId) => {
+    const response = await fetch(`${API_URL}/get_player_by_id.php?PlayerID=${playerId}`);
+    const raw = await response.text();
+    const clean = raw.replace(/^#!.*\n?/, '').trim();
+    return JSON.parse(clean);
+};
+
+// Login
+export const loginPlayer = async (username, password) => {
+    try {
+        const response = await fetch(`${API_URL}/login.php`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Username: username, Password: password }),
+        });
+        const raw = await response.text();
+        const clean = raw.replace(/^#!.*(\r?\n)?/, '').trim();
+        return JSON.parse(clean);
+    } catch (error) {
+        console.error("Login failed:", error);
+        return { error: "Login failed" };
+    }
+};
+
+export const registerPlayer = async (username, password) => {
+    try {
+      const response = await fetch(`${API_URL}/register_player.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // ✅ match PHP expectations
+        },
+        body: JSON.stringify({
+          Username: username,
+          Password: password,
+        }),
+      });
+  
+      const raw = await response.text();
+      const clean = raw.replace(/^#!.*(\r?\n)?/, '').trim();
+      return JSON.parse(clean);
+    } catch (error) {
+      console.error("Registration failed:", error);
+      return { error: "Registration failed" };
+    }
+  };
+  
+  
+
+
+
+
+
+
 
 
 

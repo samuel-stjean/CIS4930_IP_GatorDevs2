@@ -16,17 +16,21 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die(json_encode(["error" => "Invalid request method. Use POST."]));
 }
 
-if (!isset($_POST['Username'])) {
-    die(json_encode(["error" => "Missing Username field"]));
+if (!isset($_POST['Username']) || !isset($_POST['Password'])) {
+    die(json_encode(["error" => "Missing Username or Password field"]));
 }
 
 $Username = htmlspecialchars(trim($_POST['Username']));
+$Password = password_hash(trim($_POST['Password']), PASSWORD_DEFAULT);
 
-$stmt = $conn->prepare("INSERT INTO Player (Username) VALUES (?)");
+
+$stmt = $conn->prepare("INSERT INTO Player (Username, Password) VALUES (?, ?)");
+
 if (!$stmt) {
     die(json_encode(["error" => "Prepare failed: " . $conn->error]));
 }
-$stmt->bind_param("s", $Username);
+$stmt->bind_param("ss", $Username, $Password);
+
 if (!$stmt->execute()) {
     die(json_encode(["error" => "Execute failed: " . $stmt->error]));
 }

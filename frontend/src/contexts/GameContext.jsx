@@ -11,8 +11,7 @@ import {
     initialCoins,
 } from '../config/gameData';
 // Custom hook for handling intervals cleanly
-import useInterval from '../hooks/useInterval';
-import { saveInventory, loadInventory, savePlayerCoins, fetchPlayers } from '../api';
+import { saveInventory, loadInventory, savePlayerCoins, fetchPlayerById } from '../api';
 const GameContext = createContext();
 
 // Hook for components to easily access game state and actions
@@ -32,6 +31,7 @@ export const GameProvider = ({ children }) => {
     const [plots, setPlots] = useState(initialPlots);
     const [inventory, setInventory] = useState(initialInventory);
     const [coins, setCoins] = useState(initialCoins);
+    const [hasLoadedInventory, setHasLoadedInventory] = useState(false);
 
     // --- Basic State Updaters --- //
 
@@ -40,44 +40,103 @@ export const GameProvider = ({ children }) => {
     //     setCoins(prev => prev + amount);
     // }, []);
 
-    const playerId = 1; // TEMP: set your test player's ID
-
-    const updateCoins = useCallback((amount) => {
-        setCoins(prev => {
-            const updated = prev + amount;
-            savePlayerCoins(playerId, updated);  // Save to backend
-            return updated;
-        });
-    }, []);
-
-    useEffect(() => {
-        async function loadInitialCoins() {
-            const players = await fetchPlayers();
-            if (players.length > 0) {
-                setCoins(players[0].Coins || 0);
-                console.log("Loaded coins from backend:", players[0].Coins);
+    //const playerId = 1; // TEMP: set your test player's ID
+    const [playerId, setPlayerId] = useState(null);
+        useEffect(() => {
+        const stored = localStorage.getItem('playerId');
+            if (stored) {
+                setHasLoadedInventory(false);
+                setPlayerId(parseInt(stored, 10));
             }
-        }
+        }, []);
+      
+
+        useEffect(() => {
+            if (!playerId) return;
     
-        loadInitialCoins();
-    }, []);
+            async function resetGameStateForPlayer() {
+                try {
+                    const player = await fetchPlayerById(playerId);
+                    if (player?.Coins !== undefined) {
+                        setCoins(player.Coins);
+                    } else {
+                        setCoins(initialCoins);
+                    }
+    
+                    const data = await loadInventory(playerId);
+                    const mapped = {};
+                    if (Array.isArray(data)) {
+                        data.forEach(item => {
+                            if (item.ItemName && item.Quantity !== undefined) {
+                                mapped[item.ItemName] = parseInt(item.Quantity, 10);
+                            }
+                        });
+                    }
+    
+                    setInventory(mapped);
+                    setPlots(initialPlots); // Reset plots if needed
+                } catch (err) {
+                    console.error("Failed to reset game state:", err);
+                } finally {
+                    setHasLoadedInventory(true);
+                }
+            }
+    
+            resetGameStateForPlayer();
+        }, [playerId]);
+
+      const updateCoins = useCallback((amount) => {
+        setCoins(prev => {
+          const updated = prev + amount;
+          savePlayerCoins(playerId, updated);
+          return updated;
+        });
+      }, [playerId]); 
+      
+
+    // useEffect(() => {
+    //     async function loadInitialCoins() {
+    //         const player = await fetchPlayerById(playerId);
+    //         if (player && player.Coins !== undefined) {
+    //             setCoins(player.Coins);
+    //             console.log("Loaded coins from backend:", player.Coins);
+    //         } else {
+    //             console.error("Failed to load player coins:", player);
+    //         }
+    //     }
+    
+    //     loadInitialCoins();
+    // }, [playerId]); 
+    
+    
 
     // Update the quantity of an item in the inventory
     const updateInventory = useCallback((itemId, quantity) => {
         setInventory(prev => {
-            const newInventory = { ...prev };
-            const currentQuantity = newInventory[itemId] || 0;
-            const newQuantity = currentQuantity + quantity;
-
-            if (newQuantity <= 0) {
-                // Remove item from inventory if quantity reaches zero or less
-                delete newInventory[itemId];
-            } else {
-                newInventory[itemId] = newQuantity;
-            }
-            return newInventory;
+          const newInventory = { ...prev };
+          const currentQuantity = newInventory[itemId] || 0;
+          const newQuantity = currentQuantity + quantity;
+      
+          if (newQuantity <= 0) {
+            delete newInventory[itemId];
+          } else {
+            newInventory[itemId] = newQuantity;
+          }
+      
+          // Save the updated inventory
+          const inventoryArray = Object.entries(newInventory).map(([ItemName, Quantity]) => ({
+            ItemName,
+            Quantity,
+          }));
+      
+          if (playerId) {
+            saveInventory(playerId, inventoryArray);
+          }
+      
+          return newInventory;
         });
-    }, []);
+      }, [playerId]);
+      
 
     // Update a specific plot's data
     // Accepts either an object with changes to merge,
@@ -279,41 +338,38 @@ export const GameProvider = ({ children }) => {
 
     // --- Shop and Inventory Actions --- //
 
-    useEffect(() => {
-        async function fetchInventory() {
-            const data = await loadInventory(playerId);
-            console.log("Inventory from backend:", data); // <== ADD THIS
+    // useEffect(() => {
+    //     async function fetchInventory() {
+    //         const data = await loadInventory(playerId);
+    //         console.log("Inventory from backend:", data);
     
-            if (!Array.isArray(data)) {
-                console.error("Failed to load inventory: ", data);
-                return;
-            }
+    //         if (!Array.isArray(data)) {
+    //             console.error("Failed to load inventory: ", data);
+    //             return;
+    //         }
     
-            const mapped = {};
-            data.forEach(item => {
-                if (item.PlantID) mapped[`plant_${item.PlantID}`] = (mapped[`plant_${item.PlantID}`] || 0) + 1;
-                if (item.CritterID) mapped[`critter_${item.CritterID}`] = (mapped[`critter_${item.CritterID}`] || 0) + 1;
-            });
-            setInventory(mapped);
-        }
-        fetchInventory();
-    }, []);
+    //         const mapped = {};
+    //         data.forEach(item => {
+    //             if (item.ItemName && item.Quantity !== undefined) {
+    //                 mapped[item.ItemName] = parseInt(item.Quantity, 10);
+    //             }
+    //         });
+    
+    //         setInventory(mapped);
+    //         setHasLoadedInventory(true); // ✅
+    //     }
+    
+    //     fetchInventory();
+    // }, [playerId]);
     
     
     
-    useEffect(() => {
-        try {
-            const inventoryArray = [];
-            for (let item in inventory) {
-                const [type, id] = item.split('_');
-                if (type === 'plant') inventoryArray.push({ PlantID: id });
-                else if (type === 'critter') inventoryArray.push({ CritterID: id });
-            }
-            saveInventory(playerId, inventoryArray);
-        } catch (err) {
-            console.error("Failed to save inventory:", err);
-        }
-    }, [inventory]);
+    
+    
+    
+    
+    
+    
     
     
 
@@ -401,6 +457,7 @@ export const GameProvider = ({ children }) => {
         plots,
         inventory,
         coins,
+        hasLoadedInventory,
         // Static Data (could also be imported directly)
         itemDetails: staticItemDetails,
         critterTypes: staticCritterTypes,

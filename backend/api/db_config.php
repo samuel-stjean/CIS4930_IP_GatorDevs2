@@ -2,7 +2,7 @@
 <?php
 $servername = "mysql.cise.ufl.edu";
 $username = "samuel.stjean";
-$password = "password"; 
+$password = "U2F4mg3vNKBfPBr"; 
 $dbname = "Critter_Keeper_DB";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
