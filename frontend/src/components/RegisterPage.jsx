@@ -1,73 +1,84 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
 import '../styles/RegisterPage.css';
 
-const RegisterPage = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+const RegisterPage = ({ onRegisterSuccess }) => {
+  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [age, setAge] = useState("");
+  const [message, setMessage] = useState("");
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  const handleRegister = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("Username", username);
+      formData.append("FirstName", firstName);
+      formData.append("LastName", lastName);
+      formData.append("Age", age);
 
-        if (password !== confirmPassword) {
-            setError('Passwords do not match!');
-            return;
+      const response = await fetch(
+        "https://www.cise.ufl.edu/~david.vera/CIS4930_IP_GatorDevs2/backend/api/add_player.php",
+        {
+          method: "POST",
+          body: formData,
         }
+      );
 
-        // Simulate saving the user (in a real case, this would be sent to a backend)
-        console.log(`User registered: ${username}`);
+      const result = await response.json();
 
-        // Redirect user to login page
-        navigate('/login');
-    };
+      if (result.success) {
+        setMessage("Registration successful! Redirecting...");
+        setTimeout(() => {
+          onRegisterSuccess();
+        }, 1500);
+      } else {
+        setMessage(result.error || "Registration failed.");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("Error occurred.");
+    }
+  };
 
-    return (
-        <div className="register-page">
-            <div className="panel register-panel">
-                <h2 className="section-title">Create an Account</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="username">Username</label>
-                        <input
-                            type="text"
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="confirm-password">Confirm Password</label>
-                        <input
-                            type="password"
-                            id="confirm-password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    {error && <p className="error-message">{error}</p>}
-                    <button type="submit">Register</button>
-                </form>
-                <button className="back-button" onClick={() => navigate('/login')}>
-                    Back to Login
-                </button>
-            </div>
-        </div>
-    );
+  return (
+    <div className="p-4 max-w-md mx-auto mt-10 shadow rounded-lg bg-white">
+      <h2 className="text-xl font-semibold mb-4">Register</h2>
+
+      <input
+        type="text"
+        className="border p-2 w-full mb-3"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="text"
+        className="border p-2 w-full mb-3"
+        placeholder="First Name"
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+      />
+      <input
+        type="text"
+        className="border p-2 w-full mb-3"
+        placeholder="Last Name"
+        value={lastName}
+        onChange={(e) => setLastName(e.target.value)}
+      />
+      <input
+        type="number"
+        className="border p-2 w-full mb-4"
+        placeholder="Age"
+        value={age}
+        onChange={(e) => setAge(e.target.value)}
+      />
+
+      <button onClick={handleRegister} className="bg-green-500 text-white px-4 py-2 rounded w-full">
+        Register
+      </button>
+      {message && <p className="mt-4 text-center text-sm">{message}</p>}
+    </div>
+  );
 };
 
 export default RegisterPage;
