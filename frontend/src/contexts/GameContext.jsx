@@ -11,7 +11,7 @@ import {
     initialCoins,
 } from '../config/gameData';
 // Custom hook for handling intervals cleanly
-import { saveInventory, loadInventory, savePlayerCoins, fetchPlayerById } from '../api';
+import { saveInventory, loadInventory, savePlayerCoins, fetchPlayerById, savePlots, loadPlots } from '../api';
 const GameContext = createContext();
 
 // Hook for components to easily access game state and actions
@@ -74,7 +74,15 @@ export const GameProvider = ({ children }) => {
                     }
     
                     setInventory(mapped);
-                    setPlots(initialPlots); // Reset plots if needed
+                    const loadedPlots = await loadPlots(playerId);
+                    if (Array.isArray(loadedPlots) && loadedPlots.length > 0) {
+                        setPlots(loadedPlots);
+                        if (playerId) savePlots(playerId, loadedPlots);
+
+                    } else {
+                        setPlots(initialPlots);
+                    }
+
                 } catch (err) {
                     console.error("Failed to reset game state:", err);
                 } finally {
@@ -142,16 +150,17 @@ export const GameProvider = ({ children }) => {
     // Accepts either an object with changes to merge,
     // or a function that receives the current plot and returns the updated plot.
     const updatePlot = useCallback((plotId, changes) => {
-         setPlots(prevPlots =>
-             prevPlots.map(plot => {
-                 if (plot.id === plotId) {
-                     // Apply changes using either the function or merging the object
-                     if (typeof changes === 'function') { return changes(plot); }
-                     return { ...plot, ...changes };
-                 }
-                 return plot;
-             })
-         );
+        setPlots(prevPlots => {
+            const updated = prevPlots.map(plot => {
+                if (plot.id === plotId) {
+                    return typeof changes === 'function' ? changes(plot) : { ...plot, ...changes };
+                }
+                return plot;
+            });
+            if (playerId) savePlots(playerId, updated);
+            return updated;
+        });
+        
      }, []);
 
      // --- Plot Management Actions --- //
@@ -161,7 +170,12 @@ export const GameProvider = ({ children }) => {
          if (coins >= plotCosts.buyPlot) {
              updateCoins(-plotCosts.buyPlot);
              // Create a new plot object with a unique ID
-             setPlots(prevPlots => [...prevPlots, { id: `plot_${Date.now()}`, type: 'empty' }]);
+             setPlots(prev => {
+                const updated = [...prev, { id: `plot_${Date.now()}`, type: 'empty' }];
+                if (playerId) savePlots(playerId, updated);
+                return updated;
+            });
+            
          } else {
               console.warn("Not enough coins to buy plot!");
          }
@@ -451,6 +465,18 @@ export const GameProvider = ({ children }) => {
 
     }, [coins, updateCoins, updatePlot, plotCosts]); // Depends on coins and plotCosts
 
+    const saveAllGameState = useCallback(() => {
+        if (!playerId) return;
+        // Save inventory and plots at once
+        const inventoryArray = Object.entries(inventory).map(([ItemName, Quantity]) => ({
+            ItemName,
+            Quantity,
+        }));
+        saveInventory(playerId, inventoryArray);
+        savePlots(playerId, plots);
+    }, [playerId, inventory, plots]);
+    
+
     // --- Provide State and Actions to Consuming Components --- //
     const value = {
         // State
@@ -476,6 +502,7 @@ export const GameProvider = ({ children }) => {
         buyShopItem,
         sellInventoryItem,
         convertPlot,
+        saveAllGameState,
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

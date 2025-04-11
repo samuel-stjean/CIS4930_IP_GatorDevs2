@@ -51,10 +51,11 @@ const PenPlot = ({ plotData }) => {
 
             {/* Display collectable resources that have dropped */}
             <div className="resource-area">
-                 {resources.map(resource => (
-                    <ResourceDrop key={resource.id} resourceData={resource} plotId={id} />
-                 ))}
+                {resources.map((resource, index) => (
+                    < ResourceDrop key={`${resource.id}-${index}`} resourceData={resource} plotId={id} />
+                ))}
             </div>
+
 
             {/* Buttons to add new critters if space and eggs are available */}
             {canAddCritter && (

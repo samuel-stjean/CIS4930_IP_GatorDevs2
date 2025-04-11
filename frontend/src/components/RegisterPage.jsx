@@ -15,7 +15,7 @@ const RegisterPage = () => {
       const response = await registerPlayer(username, password);
       if (response && response.PlayerID) {
         localStorage.setItem('playerId', response.PlayerID);
-        navigate('/game');
+        window.location.href = '/~samuel.stjean/Critter_Keeper/game';
       } else {
         setError('Registration failed.');
       }

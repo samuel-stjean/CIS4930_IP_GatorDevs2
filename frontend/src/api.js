@@ -165,6 +165,20 @@ export const registerPlayer = async (username, password) => {
     }
   };
   
+  export const savePlots = async (playerId, plots) => {
+    await fetch(`${API_URL}/save_plots.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ PlayerID: playerId, Plots: plots }),
+    });
+  };
+  
+  export const loadPlots = async (playerId) => {
+    const res = await fetch(`${API_URL}/load_plots.php?PlayerID=${playerId}`);
+    const raw = await res.text();
+    const clean = raw.replace(/^#!.*(\r?\n)?/, '').trim();
+    return JSON.parse(clean); // array of plots
+  };
   
 
 

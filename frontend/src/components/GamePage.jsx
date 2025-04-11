@@ -10,7 +10,7 @@ import { useGame } from '../contexts/GameContext';
 // This component sets up the main layout of the game page
 const GamePage = () => {
     // Get current coins and the function to update them
-    const { coins, updateCoins, hasLoadedInventory } = useGame();
+    const { coins, updateCoins, hasLoadedInventory, saveAllGameState } = useGame();
     const navigate = useNavigate();
 
     // Simple cheat function to add coins for testing
@@ -20,6 +20,7 @@ const GamePage = () => {
     };
 
     const handleLogout = () => {
+        saveAllGameState();
         localStorage.removeItem('playerId'); 
         navigate('/'); 
     };

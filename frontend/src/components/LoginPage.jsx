@@ -19,7 +19,7 @@ const LoginPage = () => {
       const response = await loginPlayer(username, password);
       if (response && response.PlayerID) {
         localStorage.setItem('playerId', response.PlayerID);
-        navigate('/game');
+        window.location.href = '/~samuel.stjean/Critter_Keeper/game';
       } else {
         setError('Invalid login.');
       }
