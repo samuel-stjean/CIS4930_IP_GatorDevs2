@@ -164,7 +164,9 @@ export const GameProvider = ({ children }) => {
                        id: `crop_${Date.now()}_${targetSpot}`,
                        type: cropType,
                        startTime: Date.now(),
-                       spotIndex: targetSpot
+                       spotIndex: targetSpot,
+                       currentStage: 0, // Initialize current stage of crop ex if its a seed or plant
+                       stageStartTime: null, // State how long the crop has been its stage ex how long its been a seed or plant
                    };
                    success = true;
                    // Create a copy of the crops array, ensuring it has the correct length
@@ -185,6 +187,64 @@ export const GameProvider = ({ children }) => {
         }
         return success;
     }, [inventory, updateInventory, updatePlot]); // Depends on inventory
+
+
+//Main function for watering a crop - logic differnt for critter due to multiple staghes
+
+    const waterCrop = useCallback((plotId, cropId) => {
+        updatePlot(plotId, (currentPlot) => {
+            if (currentPlot.type !== 'farm' || !currentPlot.crops) return currentPlot;
+            const cropIndex = currentPlot.crops.findIndex(c => c && c.id === cropId);
+            if (cropIndex === -1) return currentPlot;
+
+            const crop = currentPlot.crops[cropIndex];
+            const cropInfo = staticCropTypes[crop.type];
+            if (!cropInfo) return currentPlot;
+
+            const totalStages = cropInfo.stages ?? 5;
+
+            // water after planting seed
+            if (crop.stageStartTime === null && crop.currentStage < totalStages - 1) {
+                const updatedCrops = [...currentPlot.crops];
+                updatedCrops[cropIndex] = {
+                    ...crop,
+                    stageStartTime: Date.now() // start time for plant in this stage
+                };
+                
+                return { ...currentPlot, crops: updatedCrops };
+            }
+            return currentPlot; 
+        });
+    }, [updatePlot ]); 
+
+    // puts crop to next stage if watered then we have to water again to go to next stage and so on until we can harvest
+    const advanceCropStage = useCallback((plotId, cropId) => {
+        updatePlot(plotId, (currentPlot) => {
+            if (currentPlot.type !== 'farm' || !currentPlot.crops) return currentPlot;
+            const cropIndex = currentPlot.crops.findIndex(c => c && c.id === cropId);
+            if (cropIndex === -1) return currentPlot;
+
+            const crop = currentPlot.crops[cropIndex];
+            const cropInfo = staticCropTypes[crop.type];
+            if (!cropInfo) return currentPlot;
+
+            const totalStages = cropInfo.stages ?? 5;
+
+            // puts crop to next stage
+            if (crop.stageStartTime !== null && crop.currentStage < totalStages - 1) {
+                const updatedCrops = [...currentPlot.crops];
+                updatedCrops[cropIndex] = {
+                    ...crop,
+                    currentStage: crop.currentStage + 1, // next stage
+                    stageStartTime: null // re water plant
+                };
+                return { ...currentPlot, crops: updatedCrops }; //returns next srage
+            }
+            return currentPlot; 
+        });
+    }, [updatePlot]);
+
+
 
    // Harvest a fully grown crop from a specific spot
    const harvestCrop = useCallback((plotId, cropId) => {
@@ -419,6 +479,8 @@ export const GameProvider = ({ children }) => {
         buyShopItem,
         sellInventoryItem,
         convertPlot,
+        waterCrop,
+        advanceCropStage,
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
