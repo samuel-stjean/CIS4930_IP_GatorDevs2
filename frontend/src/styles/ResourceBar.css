@@ -1,0 +1,59 @@
+/* Resource SBar - copied styling from inventory bar */
+.resource-section {
+    position: center;
+}
+
+.section-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #5d4037;
+    font-size: 1.2rem;
+}
+
+.resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    min-height: 100px;
+    padding: 10px;
+    background-color: #e0c8a0;
+    border-radius: 8px;
+    border: 1px solid #a07d5a;
+}
+
+.resource-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f0e6;
+    border: 1px solid #c6a67c;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: grab;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.resource-item:hover {
+    background-color: #f8f5ed;
+    transform: translateY(-2px);
+}
+
+.resource-item:active {
+    cursor: grabbing;
+    transform: scale(0.98);
+}
+
+.resource-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 4px;
+    object-fit: contain;
+}
+
+.resource-label {
+    font-size: 14px;
+    color: #5d4037;
+    text-align: center;
+}
+
