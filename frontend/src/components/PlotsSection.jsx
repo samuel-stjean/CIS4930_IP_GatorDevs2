@@ -36,7 +36,10 @@ const PlotsSection = () => {
                         className="add-plot-button"
                         title={`Cost: ${plotCosts.buyPlot} coins`}
                     >
-                        +<br />Buy Plot<br />({plotCosts.buyPlot} <span className="coin-icon-small">$</span>)
+                        <div style={{ textAlign: 'center' }}>+ Buy Plot</div>
+                        <div style={{ textAlign: 'center' }}>
+                            ({plotCosts.buyPlot} <span className="coin-icon-small" style={{ display: 'inline' }}>$</span>)
+                        </div>
                     </button>
                 </div>
             </div>
