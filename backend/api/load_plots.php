@@ -14,12 +14,12 @@ if (!$playerId) {
     die(json_encode(["error" => "Missing PlayerID"]));
 }
 
-$stmt = $conn->prepare("SELECT PlotIndex, Data FROM PlayerPlots WHERE PlayerID = ? ORDER BY PlotIndex ASC");
+$stmt = $conn->prepare("SELECT PlotIndex, Data FROM PlayerPlots WHERE PlayerID = ? ORDER BY PlotIndex ASC"); // Prepare SQL to fetch plots for the given player, ordered by index
 $stmt->bind_param("i", $playerId);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$plots = [];
+$plots = []; // Loop through each result row and decode JSON data
 while ($row = $result->fetch_assoc()) {
     $decoded = json_decode($row["Data"], true);
     if ($decoded) {

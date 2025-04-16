@@ -11,7 +11,7 @@ header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit(); }
 
-$playerID = $_GET['PlayerID'] ?? null;
+$playerID = $_GET['PlayerID'] ?? null; // Get the PlayerID from the query string (e.g., ?PlayerID=1)
 if (!$playerID) {
     ob_clean();
     echo json_encode(["error" => "Missing PlayerID"]);
@@ -24,7 +24,7 @@ file_put_contents("load_inventory_log.txt", json_encode([
     "action" => "load_request"
 ], JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
 
-$sql = "SELECT ItemName, Quantity FROM Inventory WHERE PlayerID = " . intval($playerID);
+$sql = "SELECT ItemName, Quantity FROM Inventory WHERE PlayerID = " . intval($playerID); // Query the database for all inventory items belonging to the player
 $result = $conn->query($sql);
 
 $items = [];

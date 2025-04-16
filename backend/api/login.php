@@ -24,9 +24,9 @@ $result = $stmt->get_result();
 
 if ($row = $result->fetch_assoc()) {
     if (password_verify($password, $row["Password"])) {
-        echo json_encode(["success" => true, "PlayerID" => $row["PlayerID"], "Coins" => $row["Coins"]]);
+        echo json_encode(["success" => true, "PlayerID" => $row["PlayerID"], "Coins" => $row["Coins"]]); // found user
     } else {
-        echo json_encode(["error" => "Incorrect password"]);
+        echo json_encode(["error" => "Incorrect password"]); // Username not found
     }    
     
 } else {

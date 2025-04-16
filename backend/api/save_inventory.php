@@ -27,12 +27,12 @@ $logData = [
 ];
 file_put_contents("save_inventory_log.txt", json_encode($logData, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
 
-if (!$playerID || !is_array($inventory)) {
+if (!$playerID || !is_array($inventory)) { // Validate required fields
     ob_clean();
     echo json_encode(["error" => "Invalid or missing PlayerID or Inventory"]);
     exit();
 }
-if (count($inventory) === 0) {
+if (count($inventory) === 0) { // Handle the edge case where an empty inventory is submitted
     ob_clean();
     echo json_encode(["warning" => "Empty inventory received. Save skipped."]);
     exit();

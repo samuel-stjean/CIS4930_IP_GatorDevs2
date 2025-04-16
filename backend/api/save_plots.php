@@ -27,7 +27,7 @@ $stmt = $conn->prepare("
     ON DUPLICATE KEY UPDATE Type = VALUES(Type), Data = VALUES(Data)
 ");
 
-foreach ($plots as $index => $plot) {
+foreach ($plots as $index => $plot) { // Loop through each plot, assign type and JSON-encoded data, and execute insert
     $type = $plot["type"] ?? "empty";
     $data = json_encode($plot);
     $stmt->bind_param("iiss", $playerId, $index, $type, $data);

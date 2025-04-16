@@ -21,9 +21,9 @@ $stmt = $conn->prepare("INSERT INTO Player (Username, Password, Coins) VALUES (?
 $stmt->bind_param("ss", $username, $password);
 
 if ($stmt->execute()) {
-    echo json_encode(["success" => true, "PlayerID" => $stmt->insert_id]);
+    echo json_encode(["success" => true, "PlayerID" => $stmt->insert_id]); // Success: return new PlayerID
 } else {
-    $error = $conn->errno === 1062 ? "Username already taken." : $stmt->error;
+    $error = $conn->errno === 1062 ? "Username already taken." : $stmt->error; // Handle potential errors like duplicate username
     echo json_encode(["error" => $error]);
 }
 
