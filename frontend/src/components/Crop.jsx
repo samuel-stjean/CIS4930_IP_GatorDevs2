@@ -47,44 +47,15 @@ const Crop = ({ cropData, plotId }) => {
     };
 
     // logic for dropping water onto plant
-    const handleDrop = (event) => {
-        event.preventDefault();
-        event.currentTarget.classList.remove('drag-over-target');
-        const resourceType = event.dataTransfer.getData('resourceType');
+    const { selectedResource, setSelectedResource } = useGame();
 
-        // Checks if water dropped then it waters the plant
-        if (resourceType === 'water') {
-            waterCrop(plotId, id);
-        }
+    const handleClick = () => {
+      if (selectedResource === 'water') {
+        waterCrop(plotId, id);
+        setSelectedResource(null); // Clear selection
+      }
     };
-
-    const handleDragOver = (event) => {
-        event.preventDefault();
-        const totalStages = cropInfo?.stages ?? 5;
-
-        // if no crop dropping doesnt do anything else it starts for the next stage, we keep watering until the next crop stage is dropped
-        if (cropInfo && stageStartTime === null && currentStage < totalStages - 1) {
-            event.dataTransfer.dropEffect = 'link';
-            event.currentTarget.classList.add('drag-over-target');
-        } else {
-            event.dataTransfer.dropEffect = 'none';
-        }
-    };
-
-    const handleDragLeave = (event) => {
-        event.currentTarget.classList.remove('drag-over-target');
-
-
-    };
-
-
-
-
-
-
-
-
-
+    
 
     // Make sure we have valid crop info before rendering
     if (!cropInfo) {
@@ -108,17 +79,13 @@ const Crop = ({ cropData, plotId }) => {
         <div
             className="crop-display"
             title={`${cropInfo.name} - ${isGrown ? 'Ready' : `Stage ${currentStage + 1}`}`}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-        >
+            onClick={handleClick}
+            >
             <img src={imageAsset} alt={cropInfo.name} className="crop-image" />
-            {/* Display time to next stage or stage crop is at*/}
             <div className="crop-timer">{displayStatus}</div>
-            {/* Show harvest button only when fully grown */}
             {isGrown && (
                 <button onClick={handleHarvest} className="harvest-button">
-                    Harvest
+                Harvest
                 </button>
             )}
         </div>

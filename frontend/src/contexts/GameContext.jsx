@@ -32,6 +32,9 @@ export const GameProvider = ({ children }) => {
     const [inventory, setInventory] = useState(initialInventory);
     const [coins, setCoins] = useState(initialCoins);
     const [hasLoadedInventory, setHasLoadedInventory] = useState(false);
+    const [selectedResource, setSelectedResource] = useState(null);
+    const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+
 
 
     //const playerId = 1; // TEMP: set your test player's ID
@@ -428,16 +431,12 @@ export const GameProvider = ({ children }) => {
     // Convert an empty plot to either a farm or a pen
     const convertPlot = useCallback((plotId, newType) => {
        // Find the plot first to ensure it's empty (avoids race conditions)
-       let plotToConvert = null;
-       setPlots(prev => {
-           plotToConvert = prev.find(p => p.id === plotId);
-           return prev;
-       });
+       const plotToConvert = plots.find(p => p.id === plotId);
+        if (!plotToConvert || plotToConvert.type !== 'empty') {
+            console.warn("Can only convert empty plots.");
+            return;
+        }
 
-       if (!plotToConvert || plotToConvert.type !== 'empty') {
-           console.warn("Can only convert empty plots.");
-           return;
-       }
 
        // Determine the cost based on the target type
        const cost = newType === 'farm' ? plotCosts.upgradeToFarm : plotCosts.upgradeToPen;
@@ -464,7 +463,7 @@ export const GameProvider = ({ children }) => {
             return plot; // Should not happen, return unchanged
         });
 
-    }, [coins, updateCoins, updatePlot, plotCosts]); // Depends on coins and plotCosts
+    }, [coins, updateCoins, updatePlot, plotCosts, plots]); // Depends on coins and plotCosts
 
     const saveAllGameState = useCallback(() => {
         if (!playerId) return;
@@ -506,6 +505,10 @@ export const GameProvider = ({ children }) => {
         saveAllGameState,
         waterCrop,
         advanceCropStage,
+        selectedResource,
+        setSelectedResource,
+        cursorPosition,
+        setCursorPosition
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

@@ -66,18 +66,15 @@ const Critter = ({ critterData, plotId }) => {
     }, 1000);
 
 
-    const handleDrop = (event) => {
-        event.preventDefault();
-        const resourceType = event.dataTransfer.getData('resourceType');
-        if (resourceType === 'food') {
-          setLocalDropTime(Date.now());
-          setIsTimerActive(true); // Start the timer when food is dropped
-          setTimeToNextDrop(30000);
-        }
-      };
-    
-    const handleDragOver = (event) => {
-        event.preventDefault(); // Allow dropping
+    const { selectedResource, setSelectedResource } = useGame();
+
+    const handleClick = () => {
+    if (selectedResource === 'food') {
+        setLocalDropTime(Date.now());
+        setIsTimerActive(true);
+        setTimeToNextDrop(30000);
+        setSelectedResource(null); // Clear after use
+    }
     };
 
     // --- Rendering --- //
@@ -94,14 +91,13 @@ const Critter = ({ critterData, plotId }) => {
     return (
         // Tooltip shows critter name and what it produces
         <div
-        className="critter-display"
-        title={`${critterInfo.name} (Produces ${producedItemName})`}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-      >
-        <img src={critterInfo.asset} alt={critterInfo.name} className="critter-image" />
-        <div className="critter-timer">{isTimerActive ? `${Math.ceil(timeToNextDrop / 1000)}s` : 'Needs Food'}</div>
-      </div>
+            className="critter-display"
+            title={`${critterInfo.name} (Produces ${producedItemName})`}
+            onClick={handleClick}
+            >
+            <img src={critterInfo.asset} alt={critterInfo.name} className="critter-image" />
+            <div className="critter-timer">{isTimerActive ? `${Math.ceil(timeToNextDrop / 1000)}s` : 'Needs Food'}</div>
+        </div>
     );
 };
 

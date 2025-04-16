@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // Import the main sections of the game UI
 import { useNavigate } from 'react-router-dom';
 import PlotsSection from './PlotsSection';
@@ -7,11 +7,14 @@ import InventorySection from './InventorySection';
 import ResourceBar from './ResourceBar';
 // Hook to get game state and actions
 import { useGame } from '../contexts/GameContext';
+import ResourceCursor from './ResourceCursor'; // adjust path if needed
+
+
 
 // This component sets up the main layout of the game page
 const GamePage = () => {
     // Get current coins and the function to update them
-    const { coins, updateCoins, hasLoadedInventory, saveAllGameState } = useGame();
+    const { coins, updateCoins, hasLoadedInventory, saveAllGameState, setCursorPosition } = useGame();
     const navigate = useNavigate();
 
     // Simple cheat function to add coins for testing
@@ -26,9 +29,18 @@ const GamePage = () => {
         navigate('/'); 
     };
 
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+          setCursorPosition({ x: e.clientX, y: e.clientY });
+        };
+    
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+      }, [setCursorPosition]);
+    
     if (!hasLoadedInventory) {
         return <div>Loading your game data...</div>;
-      }
+    }
 
     return (
         // The main container uses CSS Grid for layout (defined in index.css)
@@ -64,6 +76,7 @@ const GamePage = () => {
             <ShopSection />
             <InventorySection />
             <ResourceBar/> 
+            <ResourceCursor />
 
             {/* A floating cheat button for easily adding coins during development */}
             <button
