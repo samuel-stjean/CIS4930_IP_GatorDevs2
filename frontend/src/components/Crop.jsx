@@ -1,48 +1,90 @@
 import React, { useState, useEffect } from 'react';
 import { useGame } from '../contexts/GameContext'; // Import context hook
 import useInterval from '../hooks/useInterval';
-import '../styles/Crop.css'; // Create this CSS file
+import '../styles/Crop.css';
 
-// Displays a single growing or grown crop
+// Displays a single crop to go to next stage we water
 const Crop = ({ cropData, plotId }) => {
     // Get harvest action and crop details from context
-    const { harvestCrop, cropTypes } = useGame();
-    const { id, type, startTime } = cropData;
+    const { harvestCrop, cropTypes, waterCrop, advanceCropStage } = useGame();
+    const { id, type, startTime, currentStage = 0, stageStartTime = null } = cropData;
     const cropInfo = cropTypes[type];
 
-    // State for the currently displayed image frame
-    const [currentFrame, setCurrentFrame] = useState(0);
-    // State to force timer update every second
-    const [_, setTimerTick] = useState(0);
+    // State to force timer display update
+    const [timerDisplay, setTimerDisplay] = useState("...");
 
-    // Function to update the visual frame and trigger timer re-render
-    const updateGrowthAndTimer = () => {
-        if (!cropInfo) return;
+    // Function to check stage of ctop and moves it on
+    const checkStageTimer = () => {
+        if (!cropInfo || stageStartTime === null) {
+            const totalStages = cropInfo?.stages ?? 5;
+            const isGrownCheck = currentStage >= totalStages - 1;
+            setTimerDisplay(isGrownCheck ? "Ready!" : "Needs Water");
+            return;
+        }
 
-        // Update visual stage
-        const totalStages = cropInfo.stages ?? 5;
-        const timeElapsed = Date.now() - startTime;
         const growthTimePerStage = cropInfo.growthTimePerStage ?? 6000;
-        const stage = Math.min(totalStages, Math.floor(timeElapsed / growthTimePerStage) + 1);
-        setCurrentFrame(stage - 1); // Frame index is 0-based
+        const timeElapsed = Date.now() - stageStartTime;
 
-        // Force re-render for timer update
-        setTimerTick(tick => tick + 1);
+        if (timeElapsed >= growthTimePerStage) {
+            advanceCropStage(plotId, id);
+        } else {
+            const timeRemaining = Math.max(0, growthTimePerStage - timeElapsed);
+            setTimerDisplay(`${Math.ceil(timeRemaining / 1000)}s`);
+        }
     };
 
-    // Update growth stage immediately when the component loads or crop data changes
+    // Update timer display immediately when component loads or data changes
     useEffect(() => {
-        updateGrowthAndTimer();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        checkStageTimer();
     }, [cropData, cropInfo]);
 
-    // Check growth stage periodically using an interval
-    useInterval(updateGrowthAndTimer, 1000); // Check every second
+    // Checks timer when a crop is growing in a new stage
+    useInterval(checkStageTimer, stageStartTime !== null ? 1000 : null);
 
     // Handle clicking the harvest button
     const handleHarvest = () => {
         harvestCrop(plotId, id);
     };
+
+    // logic for dropping water onto plant
+    const handleDrop = (event) => {
+        event.preventDefault();
+        event.currentTarget.classList.remove('drag-over-target');
+        const resourceType = event.dataTransfer.getData('resourceType');
+
+        // Checks if water dropped then it waters the plant
+        if (resourceType === 'water') {
+            waterCrop(plotId, id);
+        }
+    };
+
+    const handleDragOver = (event) => {
+        event.preventDefault();
+        const totalStages = cropInfo?.stages ?? 5;
+
+        // if no crop dropping doesnt do anything else it starts for the next stage, we keep watering until the next crop stage is dropped
+        if (cropInfo && stageStartTime === null && currentStage < totalStages - 1) {
+            event.dataTransfer.dropEffect = 'link';
+            event.currentTarget.classList.add('drag-over-target');
+        } else {
+            event.dataTransfer.dropEffect = 'none';
+        }
+    };
+
+    const handleDragLeave = (event) => {
+        event.currentTarget.classList.remove('drag-over-target');
+
+
+    };
+
+
+
+
+
+
+
+
+
 
     // Make sure we have valid crop info before rendering
     if (!cropInfo) {
@@ -52,22 +94,27 @@ const Crop = ({ cropData, plotId }) => {
 
     // Determine if the crop is fully grown
     const totalStages = cropInfo.stages ?? 5;
-    const isGrown = currentFrame >= totalStages - 1;
-    // Select the correct image asset (growing frame or final grown asset)
-    const imageAsset = isGrown ? cropInfo.grownAsset : cropInfo.growingAssets[currentFrame];
+    const isGrown = currentStage >= totalStages - 1;
 
-    // Calculate time remaining for display
-    const growthTimePerStage = cropInfo.growthTimePerStage ?? 6000;
-    const totalGrowthTime = totalStages * growthTimePerStage;
-    const timeElapsed = Date.now() - startTime;
-    const timeRemaining = isGrown ? 0 : Math.max(0, totalGrowthTime - timeElapsed);
-    const displayTime = isGrown ? "Ready!" : `${Math.ceil(timeRemaining / 1000)}s`;
+    // Select the correct image asset using currentStage
+    const imageAsset = isGrown
+        ? cropInfo.grownAsset
+        : (cropInfo.growingAssets && cropInfo.growingAssets[currentStage]) || cropInfo.growingAssets?.[0];
+
+    // Determine display status text (managed by checkStageTimer -> timerDisplay state)
+    const displayStatus = timerDisplay;
 
     return (
-        <div className="crop-display" title={cropInfo.name}>
+        <div
+            className="crop-display"
+            title={`${cropInfo.name} - ${isGrown ? 'Ready' : `Stage ${currentStage + 1}`}`}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+        >
             <img src={imageAsset} alt={cropInfo.name} className="crop-image" />
-            {/* Restore Timer Display */}
-            <div className="crop-timer">{displayTime}</div>
+            {/* Display time to next stage or stage crop is at*/}
+            <div className="crop-timer">{displayStatus}</div>
             {/* Show harvest button only when fully grown */}
             {isGrown && (
                 <button onClick={handleHarvest} className="harvest-button">
@@ -78,4 +125,4 @@ const Crop = ({ cropData, plotId }) => {
     );
 };
 
-export default Crop; 
+export default Crop;

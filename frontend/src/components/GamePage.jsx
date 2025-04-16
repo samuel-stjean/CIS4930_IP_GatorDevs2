@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import PlotsSection from './PlotsSection';
 import ShopSection from './ShopSection';
 import InventorySection from './InventorySection';
+import ResourceBar from './ResourceBar';
 // Hook to get game state and actions
 import { useGame } from '../contexts/GameContext';
 
@@ -62,6 +63,7 @@ const GamePage = () => {
             <PlotsSection />
             <ShopSection />
             <InventorySection />
+            <ResourceBar/> 
 
             {/* A floating cheat button for easily adding coins during development */}
             <button

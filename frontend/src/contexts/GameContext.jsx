@@ -33,12 +33,6 @@ export const GameProvider = ({ children }) => {
     const [coins, setCoins] = useState(initialCoins);
     const [hasLoadedInventory, setHasLoadedInventory] = useState(false);
 
-    // --- Basic State Updaters --- //
-
-    // Update player's coin total (can be positive or negative)
-    // const updateCoins = useCallback((amount) => {
-    //     setCoins(prev => prev + amount);
-    // }, []);
 
     //const playerId = 1; // TEMP: set your test player's ID
     const [playerId, setPlayerId] = useState(null);
@@ -100,22 +94,6 @@ export const GameProvider = ({ children }) => {
           return updated;
         });
       }, [playerId]); 
-      
-
-    // useEffect(() => {
-    //     async function loadInitialCoins() {
-    //         const player = await fetchPlayerById(playerId);
-    //         if (player && player.Coins !== undefined) {
-    //             setCoins(player.Coins);
-    //             console.log("Loaded coins from backend:", player.Coins);
-    //         } else {
-    //             console.error("Failed to load player coins:", player);
-    //         }
-    //     }
-    
-    //     loadInitialCoins();
-    // }, [playerId]); 
-    
     
 
     // Update the quantity of an item in the inventory
@@ -237,7 +215,9 @@ export const GameProvider = ({ children }) => {
                        id: `crop_${Date.now()}_${targetSpot}`,
                        type: cropType,
                        startTime: Date.now(),
-                       spotIndex: targetSpot
+                       spotIndex: targetSpot,
+                       currentStage: 0, // Initialize current stage of crop ex if its a seed or plant
+                       stageStartTime: null, // State how long the crop has been its stage ex how long its been a seed or plant
                    };
                    success = true;
                    // Create a copy of the crops array, ensuring it has the correct length
@@ -302,6 +282,63 @@ export const GameProvider = ({ children }) => {
        }
    }, [updateInventory, updatePlot]); // Doesn't depend on external state besides static data
 
+   //Main function for watering a crop - logic differnt for critter due to multiple staghes
+
+    const waterCrop = useCallback((plotId, cropId) => {
+        updatePlot(plotId, (currentPlot) => {
+            if (currentPlot.type !== 'farm' || !currentPlot.crops) return currentPlot;
+            const cropIndex = currentPlot.crops.findIndex(c => c && c.id === cropId);
+            if (cropIndex === -1) return currentPlot;
+
+            const crop = currentPlot.crops[cropIndex];
+            const cropInfo = staticCropTypes[crop.type];
+            if (!cropInfo) return currentPlot;
+
+            const totalStages = cropInfo.stages ?? 5;
+
+            // water after planting seed
+            if (crop.stageStartTime === null && crop.currentStage < totalStages - 1) {
+                const updatedCrops = [...currentPlot.crops];
+                updatedCrops[cropIndex] = {
+                    ...crop,
+                    stageStartTime: Date.now() // start time for plant in this stage
+                };
+
+                return { ...currentPlot, crops: updatedCrops };
+            }
+            return currentPlot; 
+        });
+    }, [updatePlot ]); 
+
+    // puts crop to next stage if watered then we have to water again to go to next stage and so on until we can harvest
+    const advanceCropStage = useCallback((plotId, cropId) => {
+        updatePlot(plotId, (currentPlot) => {
+            if (currentPlot.type !== 'farm' || !currentPlot.crops) return currentPlot;
+            const cropIndex = currentPlot.crops.findIndex(c => c && c.id === cropId);
+            if (cropIndex === -1) return currentPlot;
+
+            const crop = currentPlot.crops[cropIndex];
+            const cropInfo = staticCropTypes[crop.type];
+            if (!cropInfo) return currentPlot;
+
+            const totalStages = cropInfo.stages ?? 5;
+
+            // puts crop to next stage
+            if (crop.stageStartTime !== null && crop.currentStage < totalStages - 1) {
+                const updatedCrops = [...currentPlot.crops];
+                updatedCrops[cropIndex] = {
+                    ...crop,
+                    currentStage: crop.currentStage + 1, // next stage
+                    stageStartTime: null // re water plant
+                };
+                return { ...currentPlot, crops: updatedCrops }; //returns next srage
+            }
+            return currentPlot; 
+        });
+    }, [updatePlot]);
+
+
+
    // Add a new critter to a pen, checking capacity and egg availability
    const addCritter = useCallback((plotId, critterTypeId) => {
        const critterInfo = staticCritterTypes[critterTypeId];
@@ -350,42 +387,6 @@ export const GameProvider = ({ children }) => {
        return success;
    }, [inventory, updateInventory, updatePlot]); // Depends on inventory
 
-    // --- Shop and Inventory Actions --- //
-
-    // useEffect(() => {
-    //     async function fetchInventory() {
-    //         const data = await loadInventory(playerId);
-    //         console.log("Inventory from backend:", data);
-    
-    //         if (!Array.isArray(data)) {
-    //             console.error("Failed to load inventory: ", data);
-    //             return;
-    //         }
-    
-    //         const mapped = {};
-    //         data.forEach(item => {
-    //             if (item.ItemName && item.Quantity !== undefined) {
-    //                 mapped[item.ItemName] = parseInt(item.Quantity, 10);
-    //             }
-    //         });
-    
-    //         setInventory(mapped);
-    //         setHasLoadedInventory(true); // ✅
-    //     }
-    
-    //     fetchInventory();
-    // }, [playerId]);
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     // Buy an item (seed, egg) from the shop
     const buyShopItem = useCallback((itemId) => {
@@ -503,6 +504,8 @@ export const GameProvider = ({ children }) => {
         sellInventoryItem,
         convertPlot,
         saveAllGameState,
+        waterCrop,
+        advanceCropStage,
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
