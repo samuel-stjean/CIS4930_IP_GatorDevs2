@@ -20,7 +20,6 @@ $input = json_decode(file_get_contents("php://input"), true);
 $playerID = $input["PlayerID"] ?? null;
 $inventory = $input["Inventory"] ?? [];
 
-// ✅ Log the raw input and decoded values
 $logData = [
     "timestamp" => date("Y-m-d H:i:s"),
     "PlayerID" => $playerID,
@@ -28,7 +27,6 @@ $logData = [
 ];
 file_put_contents("save_inventory_log.txt", json_encode($logData, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
 
-// ❗ Prevent full wipe if inventory is accidentally empty
 if (!$playerID || !is_array($inventory)) {
     ob_clean();
     echo json_encode(["error" => "Invalid or missing PlayerID or Inventory"]);

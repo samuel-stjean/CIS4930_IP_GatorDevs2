@@ -18,7 +18,6 @@ if (!$playerID) {
     exit();
 }
 
-// ✅ Log the incoming load request
 file_put_contents("load_inventory_log.txt", json_encode([
     "timestamp" => date("Y-m-d H:i:s"),
     "PlayerID" => $playerID,
@@ -33,7 +32,6 @@ while ($row = $result->fetch_assoc()) {
     $items[] = $row;
 }
 
-// ✅ Log the inventory data returned
 file_put_contents("load_inventory_log.txt", json_encode([
     "timestamp" => date("Y-m-d H:i:s"),
     "PlayerID" => $playerID,

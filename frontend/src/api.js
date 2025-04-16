@@ -148,7 +148,7 @@ export const registerPlayer = async (username, password) => {
       const response = await fetch(`${API_URL}/register_player.php`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // ✅ match PHP expectations
+          "Content-Type": "application/json", // match PHP expectations
         },
         body: JSON.stringify({
           Username: username,

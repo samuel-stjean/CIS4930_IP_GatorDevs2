@@ -15,5 +15,5 @@ if (!$conn || $conn->connect_error) {
     die(json_encode(["error" => "DB failed: " . $conn->connect_error]));
 }
 
-echo json_encode(["status" => "✅ DB connection works"]);
+echo json_encode(["status" => " DB connection works"]);
 ?>
